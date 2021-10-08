@@ -18,12 +18,13 @@ def webServer(port = 5500):
         print('Ready to serve...')
         connectionSocket, addr = serverSocket.accept()#accepts the connection
         try:
-            message = connectionSocket.recv(1024)#receive the maximum amount of bits in message
+            message = connectionSocket.recv(1024).decode()#receive the maximum amount of bits in message
 
             filename = message.split()[1]
             f = open(filename[1:])
             outputdata = f.read() #read file line
             #Send one HTTP header line into socket
+            print("HTTP 200 OK") #tells terminal it is all good
             connectionSocket.send("HTTP/1.1 200 OK\n\n".encode())    #gives the ok if connection was good
 
             #Send the content of the requested file to the client
@@ -34,7 +35,7 @@ def webServer(port = 5500):
 
         except IOError:
             #Send response message for file not found
-            print("404 Not Found")
+            print("404 Not Found")#gives terminal not found message
             connectionSocket.send("HTTP/1.1 404 Not Found\n\n".encode()) #sends the 404 not found message if html connection doesnt match up
             #Close client socket
             connectionSocket.close()

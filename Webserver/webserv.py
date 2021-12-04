@@ -2,30 +2,37 @@
 
 #import socket module for the library
 from socket import *
-import sys # In order to terminate the program
+# In order to terminate the program
+import sys 
 
 def webServer(port = 5500):
-    serverHost = '127.0.0.1' #server host or ip address for html is declared
-    serverPort = 5500 #port number for the server is saved
+    #server host or ip address for html is declared
+    serverHost = '127.0.0.1'   
+    #port number for the server is saved 
+    serverPort = 5500           
 
     serverSocket = socket(AF_INET, SOCK_STREAM)
     #Prepare a sever socket
-    serverSocket.bind((serverHost, serverPort)) #bind the host and port together
+    serverSocket.bind((serverHost, serverPort))      
+    #bind the host and port together
     serverSocket.listen(1)
 
     while True:
         #Establish the connection
         print('Ready to serve...')
-        connectionSocket, addr = serverSocket.accept()#accepts the connection
+        #accepts the connection
+        connectionSocket, addr = serverSocket.accept()
         try:
-            message = connectionSocket.recv(1024).decode()#receive the maximum amount of bits in message
+            #receive the maximum amount of bits in message
+            message = connectionSocket.recv(1024).decode()
 
             filename = message.split()[1]
             f = open(filename[1:])
-            outputdata = f.read() #read file line
+            #read file line
+            outputdata = f.read() 
             #Send one HTTP header line into socket
-            print("HTTP 200 OK") #tells terminal it is all good
-            connectionSocket.send("HTTP/1.1 200 OK\n\n".encode())    #gives the ok if connection was good
+            print("HTTP 200 OK")                                        #tells terminal it is all good
+            connectionSocket.send("HTTP/1.1 200 OK\n\n".encode())       #gives the ok if connection was good
 
             #Send the content of the requested file to the client
             for i in range(0, len(outputdata)):
@@ -35,13 +42,13 @@ def webServer(port = 5500):
 
         except IOError:
             #Send response message for file not found
-            print("404 Not Found")#gives terminal not found message
-            connectionSocket.send("HTTP/1.1 404 Not Found\n\n".encode()) #sends the 404 not found message if html connection doesnt match up
+            print("404 Not Found")                                              #gives terminal not found message
+            connectionSocket.send("HTTP/1.1 404 Not Found\n\n".encode())        #sends the 404 not found message if html connection doesnt match up
             #Close client socket
             connectionSocket.close()
             break
     serverSocket.close()
-    sys.exit()#Terminate the program after sending the corresponding data
+    sys.exit()                                                          #Terminate the program after sending the corresponding data
 
 if __name__ == "__main__":
     webServer(5500)
